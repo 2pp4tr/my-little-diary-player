@@ -7,6 +7,7 @@
 <title>MY LITTLE DIARY MUSIC PLAYER</title>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
@@ -35,7 +36,7 @@ body {
 
 
 /* ╔══════════════════════════════╗
-   ║ 🎀 MUSIC PLAYER
+   ║ 🎀 PLAYER
    ╚══════════════════════════════╝ */
 
 .player {
@@ -44,7 +45,7 @@ body {
 
     margin: 0 auto;
 
-    padding: 14px 15px;
+    padding: 15px;
 
     background: #fffaf7;
 
@@ -63,15 +64,16 @@ body {
 
 .top {
     display: flex;
+
     align-items: center;
 
     gap: 11px;
 
-    margin-bottom: 9px;
+    margin-bottom: 10px;
 }
 
 
-/* 앨범 */
+/* 앨범 아이콘 */
 
 .cover {
     width: 48px;
@@ -80,6 +82,7 @@ body {
     flex: 0 0 48px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -91,10 +94,11 @@ body {
 }
 
 
-/* 정보 */
+/* 제목 */
 
 .info {
     min-width: 0;
+
     flex: 1;
 }
 
@@ -102,11 +106,13 @@ body {
     color: #4f6652;
 
     font-size: 15px;
+
     font-weight: 500;
 
     white-space: nowrap;
 
     overflow: hidden;
+
     text-overflow: ellipsis;
 }
 
@@ -120,12 +126,13 @@ body {
     white-space: nowrap;
 
     overflow: hidden;
+
     text-overflow: ellipsis;
 }
 
 
 /* ─────────────────────────────
-   ▶ 커스텀 버튼
+   ▶ 커스텀 재생 버튼
 ───────────────────────────── */
 
 .play-button {
@@ -149,6 +156,7 @@ body {
     cursor: pointer;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -169,49 +177,50 @@ body {
 
 
 /* ─────────────────────────────
-   🎬 YouTube 영역
-
-   ★ 중요 ★
-   Notion에서 최초 재생이 되도록
-   실제로 렌더링되는 작은 iframe 유지
+   🎬 YouTube 영상
 ───────────────────────────── */
 
 .youtube-area {
     width: 100%;
 
-    height: 96px;
+    min-height: 155px;
 
-    margin-top: 2px;
-
-    padding: 5px;
+    padding: 10px;
 
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
     background: #e5f2df;
 
-    border-radius: 19px;
+    border-radius: 20px;
 
     overflow: hidden;
 }
 
+
+/*
+  영상은 너무 크지 않게.
+  16:9 비율 약 240 × 135
+*/
+
 #youtube {
     display: block !important;
 
-    width: 80px !important;
-    height: 45px !important;
+    width: 240px !important;
+    height: 135px !important;
 
-    min-width: 80px !important;
-    max-width: 80px !important;
+    min-width: 240px !important;
+    max-width: 240px !important;
 
-    min-height: 45px !important;
-    max-height: 45px !important;
+    min-height: 135px !important;
+    max-height: 135px !important;
 
     border: 0 !important;
 
-    border-radius: 14px !important;
+    border-radius: 15px !important;
 }
 
 
@@ -226,7 +235,7 @@ body {
 
     gap: 7px;
 
-    margin-top: 8px;
+    margin-top: 9px;
 }
 
 .time {
@@ -242,17 +251,17 @@ body {
 }
 
 
-/* range */
-
 #progress {
     flex: 1;
 
     width: 100%;
+
     height: 5px;
 
     margin: 0;
 
     appearance: none;
+
     -webkit-appearance: none;
 
     background: #dfe9da;
@@ -277,6 +286,7 @@ body {
 
 #progress::-webkit-slider-thumb {
     appearance: none;
+
     -webkit-appearance: none;
 
     width: 11px;
@@ -363,7 +373,7 @@ body {
 }
 
 
-/* 불러오기 */
+/* 불러오기 버튼 */
 
 .load-button {
     height: 34px;
@@ -405,7 +415,9 @@ body {
 }
 
 
-/* 모바일 */
+/* ─────────────────────────────
+   📱 작은 화면
+───────────────────────────── */
 
 @media (max-width: 450px) {
 
@@ -418,9 +430,22 @@ body {
     }
 
     .youtube-area {
-        height: 90px;
+        min-height: 135px;
+        padding: 7px;
+    }
+
+    #youtube {
+        width: 200px !important;
+        height: 113px !important;
+
+        min-width: 200px !important;
+        max-width: 200px !important;
+
+        min-height: 113px !important;
+        max-height: 113px !important;
     }
 }
+
 </style>
 </head>
 
@@ -428,6 +453,7 @@ body {
 <body>
 
 <div class="player">
+
 
     <!-- 🎵 제목 -->
 
@@ -462,7 +488,6 @@ body {
             class="play-button"
             id="playBtn"
             type="button"
-            aria-label="재생"
         >
             ▶
         </button>
@@ -514,7 +539,7 @@ body {
 
 
 
-    <!-- 🔗 YouTube URL -->
+    <!-- 🔗 URL -->
 
     <div class="urlbox">
 
@@ -550,6 +575,10 @@ body {
 
 <script>
 
+/* ═══════════════════════════════
+   기본 변수
+═══════════════════════════════ */
+
 let player = null;
 
 let playerReady = false;
@@ -557,6 +586,7 @@ let playerReady = false;
 let progressTimer = null;
 
 let currentVideoId = null;
+
 
 
 /* 요소 */
@@ -587,9 +617,9 @@ const loadButton =
 
 
 
-/* ─────────────────────────────
+/* ═══════════════════════════════
    ⏱ 시간
-───────────────────────────── */
+═══════════════════════════════ */
 
 function formatTime(seconds) {
 
@@ -614,9 +644,9 @@ function formatTime(seconds) {
 
 
 
-/* ─────────────────────────────
-   🔗 YouTube ID 추출
-───────────────────────────── */
+/* ═══════════════════════════════
+   🔗 YouTube ID
+═══════════════════════════════ */
 
 function getVideoId(url) {
 
@@ -678,9 +708,9 @@ function getVideoId(url) {
 
 
 
-/* ─────────────────────────────
-   ▶ YouTube API 준비
-───────────────────────────── */
+/* ═══════════════════════════════
+   ▶ YouTube API
+═══════════════════════════════ */
 
 function onYouTubeIframeAPIReady() {
 
@@ -689,9 +719,9 @@ function onYouTubeIframeAPIReady() {
             'youtube',
             {
 
-                width: '80',
+                width: '240',
 
-                height: '45',
+                height: '135',
 
                 videoId: '',
 
@@ -736,9 +766,9 @@ function onYouTubeIframeAPIReady() {
 
 
 
-/* ─────────────────────────────
-   🎵 재생 상태
-───────────────────────────── */
+/* ═══════════════════════════════
+   🎵 상태
+═══════════════════════════════ */
 
 function handleState(state) {
 
@@ -791,9 +821,9 @@ function handleState(state) {
 
 
 
-/* ─────────────────────────────
+/* ═══════════════════════════════
    🎵 제목 / 채널
-───────────────────────────── */
+═══════════════════════════════ */
 
 function updateInfo() {
 
@@ -808,9 +838,7 @@ function updateInfo() {
 
 
     const data =
-        player.getVideoData
-            ? player.getVideoData()
-            : null;
+        player.getVideoData();
 
 
     if (!data) {
@@ -839,9 +867,9 @@ function updateInfo() {
 
 
 
-/* ─────────────────────────────
+/* ═══════════════════════════════
    📍 진행바
-───────────────────────────── */
+═══════════════════════════════ */
 
 function updateProgress() {
 
@@ -889,9 +917,9 @@ function updateProgress() {
 
 
 
-/* ─────────────────────────────
+/* ═══════════════════════════════
    🔄 진행바 시작
-───────────────────────────── */
+═══════════════════════════════ */
 
 function startProgress() {
 
@@ -926,9 +954,9 @@ function stopProgress() {
 
 
 
-/* ─────────────────────────────
-   ▶ 커스텀 재생 버튼
-───────────────────────────── */
+/* ═══════════════════════════════
+   ▶ 커스텀 버튼
+═══════════════════════════════ */
 
 playButton.addEventListener(
     'click',
@@ -989,9 +1017,9 @@ playButton.addEventListener(
 
 
 
-/* ─────────────────────────────
+/* ═══════════════════════════════
    ⏩ 진행바 이동
-───────────────────────────── */
+═══════════════════════════════ */
 
 progress.addEventListener(
     'input',
@@ -1025,9 +1053,9 @@ progress.addEventListener(
 
 
 
-/* ─────────────────────────────
+/* ═══════════════════════════════
    🔗 불러오기
-───────────────────────────── */
+═══════════════════════════════ */
 
 loadButton.addEventListener(
     'click',
@@ -1052,9 +1080,9 @@ urlInput.addEventListener(
 
 
 
-/* ─────────────────────────────
+/* ═══════════════════════════════
    🎵 영상 불러오기
-───────────────────────────── */
+═══════════════════════════════ */
 
 function loadVideo() {
 
@@ -1093,48 +1121,13 @@ function loadVideo() {
 
 
     /*
-      불러오기에서는 재생하지 않고
-      영상만 준비한다.
+      ★ 핵심 ★
+
+      기존에 Notion에서 안정적으로
+      작동했던 cueVideoById 사용
     */
 
-    player.loadVideoById({
-        videoId: id,
-        startSeconds: 0
-    });
-
-
-    /*
-      혹시 자동으로 재생되면
-      일단 일시정지해서
-      사용자가 ▶ 버튼을 누르게 한다.
-    */
-
-    setTimeout(
-        function () {
-
-            if (
-                player &&
-                playerReady
-            ) {
-
-                const state =
-                    player.getPlayerState();
-
-
-                if (
-                    state ===
-                    YT.PlayerState.PLAYING
-                ) {
-
-                    player.pauseVideo();
-
-                }
-
-            }
-
-        },
-        300
-    );
+    player.cueVideoById(id);
 
 
     titleElement.textContent =
@@ -1167,9 +1160,9 @@ function loadVideo() {
 
 
 
-/* ─────────────────────────────
-   🎵 영상 정보 기다리기
-───────────────────────────── */
+/* ═══════════════════════════════
+   🎵 영상 정보
+═══════════════════════════════ */
 
 function waitForVideoData() {
 
@@ -1235,7 +1228,6 @@ function waitForVideoData() {
                         clearInterval(
                             timer
                         );
-
 
                         return;
 
