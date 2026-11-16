@@ -3,11 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>MY LITTLE DIARY MUSIC PLAYER</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
-
 * {
   box-sizing: border-box;
 }
@@ -17,12 +16,13 @@ body {
   margin: 0;
   padding: 0;
   background: #fffaf7 !important;
-  background-color: #fffaf7 !important;
 }
 
 body {
   padding: 16px;
-  font-family: 'Jua', 'Apple SD Gothic Neo', sans-serif;
+  font-family:
+    'Apple SD Gothic Neo',
+    sans-serif;
   color: #4f6652;
 }
 
@@ -32,152 +32,76 @@ body {
   margin: auto;
 
   background: #fffaf7;
+
   border: 2px solid #e5f2df;
   border-radius: 28px;
 
   padding: 14px 16px;
 
-  box-shadow: 0 8px 24px rgba(180,150,140,.10);
+  box-shadow:
+    0 8px 24px rgba(180,150,140,.10);
 }
 
-.row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
 
-.cover {
-  width: 56px;
-  height: 56px;
-  flex: 0 0 56px;
-
-  border-radius: 18px;
-  background: #e5f2df;
-
-  display: grid;
-  place-items: center;
-
-  font-size: 25px;
-  overflow: hidden;
-}
-
-.cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: none;
-}
-
-.info {
-  min-width: 0;
-  flex: 1;
-}
-
+/* 🎵 제목 */
 .title {
-  font-size: 16px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.artist {
-  font-size: 12px;
-  color: #91a292;
-  margin-top: 3px;
-}
-
-button {
-  border: 0;
-  cursor: pointer;
-
-  background: #e5f2df;
-  color: #4f6652;
-
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-
-  font-size: 17px;
-}
-
-button:active {
-  transform: scale(.95);
-}
-
-.controls {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 10px;
+
+  font-size: 15px;
+  margin-bottom: 10px;
+
+  color: #4f6652;
 }
 
-.time {
-  font-size: 11px;
-  color: #91a292;
-  min-width: 34px;
-  text-align: center;
-}
+.music {
+  width: 38px;
+  height: 38px;
 
-input[type="range"] {
-  flex: 1;
-  accent-color: #91ad91;
-  cursor: pointer;
-}
-
-.urlbox {
-  display: flex;
-  gap: 7px;
-  margin-top: 11px;
-}
-
-.urlbox input {
-  min-width: 0;
-  flex: 1;
-
-  border: 1px solid #dfe9da;
   border-radius: 14px;
 
-  padding: 9px 11px;
+  background: #e5f2df;
 
-  font-family: inherit;
-  color: #4f6652;
-  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 19px;
 }
 
-.urlbox input:focus {
-  outline: none;
-  border-color: #b8cdb2;
+
+/* 🎀 YouTube */
+.video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  background: #e5f2df;
 }
 
-.urlbox button {
-  width: auto;
-  height: 36px;
+.video iframe {
+  width: 100%;
+  height: 100%;
 
-  border-radius: 12px;
-  padding: 0 12px;
+  border: 0;
 
-  font-size: 13px;
+  display: block;
 }
 
+
+/* 💚 아래 문구 */
 .note {
-  font-size: 10px;
-  color: #a0aaa0;
+  margin-top: 9px;
+
   text-align: center;
-  margin-top: 8px;
-}
 
+  font-size: 10px;
 
-/* 🎵 YouTube 플레이어 */
-#yt {
-  position: absolute;
-  width: 200px;
-  height: 120px;
-
-  left: -10000px;
-  top: 0;
-
-  opacity: 0.01;
-  pointer-events: none;
+  color: #a0aaa0;
 }
 </style>
 </head>
@@ -186,484 +110,40 @@ input[type="range"] {
 
 <div class="player">
 
-  <div class="row">
+  <div class="title">
+    <div class="music">🎵</div>
 
-    <div class="cover" id="cover">
-      <span id="coverEmoji">🎵</span>
-      <img id="coverImg" alt="">
+    <div>
+      ♡ 오늘의 플레이리스트 ♡
     </div>
-
-    <div class="info">
-      <div class="title" id="title">오늘의 노래</div>
-      <div class="artist" id="artist">YouTube Music</div>
-    </div>
-
-    <button id="playBtn" aria-label="재생">▶</button>
-
   </div>
 
 
-  <div class="controls">
+  <div class="video">
 
-    <span class="time" id="current">0:00</span>
-
-    <input
-      id="progress"
-      type="range"
-      min="0"
-      max="100"
-      value="0"
-      step="0.1"
-    >
-
-    <span class="time" id="duration">0:00</span>
-
-  </div>
-
-
-  <div class="urlbox">
-
-    <input
-      id="url"
-      type="text"
-      placeholder="YouTube 링크를 붙여넣어 주세요"
-    >
-
-    <button id="load">불러오기</button>
+    <iframe
+      src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+      title="YouTube Music Player"
+      allow="
+        accelerometer;
+        autoplay;
+        clipboard-write;
+        encrypted-media;
+        gyroscope;
+        picture-in-picture;
+        web-share
+      "
+      allowfullscreen>
+    </iframe>
 
   </div>
 
 
   <div class="note">
-    링크를 불러오면 실제 YouTube 재생과 진행바가 연동됩니다.
+    ♡ 오늘도 좋은 노래와 함께 ♡
   </div>
 
 </div>
-
-
-<!-- YouTube API가 사용할 플레이어 -->
-<div id="yt"></div>
-
-
-<script>
-'use strict';
-
-let player = null;
-let ready = false;
-let timer = null;
-let pendingVideoId = null;
-
-
-const $ = (id) => document.getElementById(id);
-
-
-/* 시간 표시 */
-function fmt(seconds) {
-
-  seconds = Math.max(
-    0,
-    Math.floor(seconds || 0)
-  );
-
-  const minutes = Math.floor(seconds / 60);
-
-  const secs = String(
-    seconds % 60
-  ).padStart(2, '0');
-
-  return minutes + ':' + secs;
-}
-
-
-/* YouTube 영상 ID 추출 */
-function videoId(url) {
-
-  try {
-
-    const u = new URL(url);
-
-    /* youtu.be/xxxx */
-    if (
-      u.hostname.includes('youtu.be')
-    ) {
-      return u.pathname
-        .replace('/', '')
-        .split('?')[0];
-    }
-
-
-    /* youtube.com/watch?v=xxxx */
-    const v = u.searchParams.get('v');
-
-    if (v) {
-      return v;
-    }
-
-
-    /* /embed/xxxx */
-    /* /shorts/xxxx */
-    const match = u.pathname.match(
-      /\/(?:embed|shorts)\/([^/?]+)/
-    );
-
-    return match
-      ? match[1]
-      : '';
-
-  } catch (e) {
-
-    return '';
-
-  }
-}
-
-
-/* YouTube API 준비 완료 */
-window.onYouTubeIframeAPIReady = function () {
-
-  player = new YT.Player('yt', {
-
-    width: '200',
-    height: '120',
-
-    videoId: '',
-
-    playerVars: {
-
-      autoplay: 0,
-      controls: 0,
-      rel: 0,
-      playsinline: 1,
-
-      /* ⭐ Notion 안에서도 현재 페이지를 origin으로 인식 */
-      origin: window.location.origin
-
-    },
-
-    events: {
-
-      onReady: function () {
-
-        ready = true;
-
-        /* 버튼이 눌렸을 때 미리 저장된 영상이 있다면 로드 */
-        if (pendingVideoId) {
-
-          loadVideo(
-            pendingVideoId
-          );
-
-          pendingVideoId = null;
-
-        }
-
-      },
-
-
-      onStateChange: function (event) {
-
-        if (
-          event.data === YT.PlayerState.PLAYING
-        ) {
-
-          updateInfo();
-
-          $('playBtn').textContent = 'Ⅱ';
-
-          clearInterval(timer);
-
-          timer = setInterval(
-            updateProgress,
-            300
-          );
-
-        }
-
-        else if (
-          event.data === YT.PlayerState.PAUSED
-        ) {
-
-          $('playBtn').textContent = '▶';
-
-          clearInterval(timer);
-
-        }
-
-        else if (
-          event.data === YT.PlayerState.ENDED
-        ) {
-
-          $('playBtn').textContent = '▶';
-
-          clearInterval(timer);
-
-          updateProgress();
-
-        }
-
-      }
-
-    }
-
-  });
-
-};
-
-
-/* 영상 불러오기 */
-function loadVideo(id) {
-
-  if (!id) {
-    return;
-  }
-
-
-  if (!ready || !player) {
-
-    pendingVideoId = id;
-
-    return;
-
-  }
-
-
-  player.loadVideoById(id);
-
-  $('playBtn').textContent = '▶';
-
-
-  /* 제목 정보는 영상 로드 직후에는 늦게 들어올 수 있어서 */
-  /* 잠시 후 다시 확인 */
-
-  setTimeout(
-    updateInfo,
-    700
-  );
-
-  setTimeout(
-    updateInfo,
-    1500
-  );
-
-}
-
-
-/* YouTube 제목 / 채널 */
-function updateInfo() {
-
-  if (!player || !ready) {
-    return;
-  }
-
-
-  try {
-
-    const info =
-      player.getVideoData();
-
-
-    if (info) {
-
-      if (info.title) {
-
-        $('title').textContent =
-          info.title;
-
-      }
-
-
-      if (info.author) {
-
-        $('artist').textContent =
-          info.author;
-
-      }
-
-    }
-
-  } catch (e) {
-
-    /* 아직 정보가 준비되지 않은 경우 무시 */
-
-  }
-
-}
-
-
-/* 진행바 */
-function updateProgress() {
-
-  if (!player || !ready) {
-    return;
-  }
-
-
-  try {
-
-    const duration =
-      player.getDuration() || 0;
-
-    const current =
-      player.getCurrentTime() || 0;
-
-
-    $('current').textContent =
-      fmt(current);
-
-
-    $('duration').textContent =
-      fmt(duration);
-
-
-    if (duration > 0) {
-
-      $('progress').max =
-        duration;
-
-      $('progress').value =
-        current;
-
-    }
-
-  } catch (e) {
-
-    /* 무시 */
-
-  }
-
-}
-
-
-/* 🎵 불러오기 버튼 */
-$('load').addEventListener(
-  'click',
-  function () {
-
-    const input =
-      $('url').value.trim();
-
-
-    const id =
-      videoId(input);
-
-
-    if (!id) {
-
-      alert(
-        'YouTube 링크를 확인해 주세요.'
-      );
-
-      return;
-
-    }
-
-
-    loadVideo(id);
-
-  }
-);
-
-
-/* 엔터키로도 불러오기 */
-$('url').addEventListener(
-  'keydown',
-  function (event) {
-
-    if (event.key === 'Enter') {
-
-      $('load').click();
-
-    }
-
-  }
-);
-
-
-/* ▶ 재생 / 일시정지 */
-$('playBtn').addEventListener(
-  'click',
-  function () {
-
-    if (!player || !ready) {
-
-      return;
-
-    }
-
-
-    try {
-
-      const state =
-        player.getPlayerState();
-
-
-      if (
-        state === YT.PlayerState.PLAYING
-      ) {
-
-        player.pauseVideo();
-
-      }
-
-      else {
-
-        player.playVideo();
-
-      }
-
-    } catch (e) {
-
-      console.log(
-        'YouTube 재생 오류:',
-        e
-      );
-
-    }
-
-  }
-);
-
-
-/* 진행바 이동 */
-$('progress').addEventListener(
-  'input',
-  function () {
-
-    if (!player || !ready) {
-
-      return;
-
-    }
-
-
-    try {
-
-      player.seekTo(
-        Number(
-          $('progress').value
-        ),
-        true
-      );
-
-    } catch (e) {
-
-      console.log(
-        'Seek 오류:',
-        e
-      );
-
-    }
-
-  }
-);
-
-</script>
-
-
-<!-- ⭐ YouTube IFrame API -->
-<script
-  src="https://www.youtube.com/iframe_api">
-</script>
 
 </body>
 </html>
