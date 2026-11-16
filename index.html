@@ -60,7 +60,7 @@ body {
     align-items: center;
     gap: 11px;
 
-    margin-bottom: 8px;
+    margin-bottom: 7px;
 }
 
 
@@ -149,72 +149,51 @@ body {
 
 
 /* ╭─────────────────────╮
-   👻 YOUTUBE 숨김 영역
+   👻 YOUTUBE 최소화
 ╰─────────────────────╯ */
 
 /*
-  YouTube iframe은 실제 재생을 위해
-  DOM 안에 그대로 유지한다.
+  YouTube iframe을 완전히 삭제하거나
+  display:none으로 만들면 재생 API가
+  정상 작동하지 않을 수 있다.
 
-  단, 영상이 보이지 않도록
-  같은 크기의 크림색 덮개를 위에 올린다.
+  그래서 2×2px로 유지하고
+  투명하게 만든다.
 */
 
 .youtube-area {
-    position: relative;
+    width: 2px;
+    height: 2px;
 
-    width: 80px;
-    height: 45px;
-
-    margin: 2px auto 0;
+    margin: 1px auto 0;
 
     overflow: hidden;
 
-    background: #fffaf7;
+    opacity: 0;
 
-    border-radius: 10px;
+    pointer-events: none;
+
+    line-height: 0;
 }
 
 
-/* 실제 YouTube */
+/* 실제 YouTube iframe */
 
 #youtube {
     display: block !important;
 
-    width: 80px !important;
-    height: 45px !important;
+    width: 2px !important;
+    height: 2px !important;
 
-    min-width: 80px !important;
-    max-width: 80px !important;
+    min-width: 2px !important;
+    max-width: 2px !important;
 
-    min-height: 45px !important;
-    max-height: 45px !important;
+    min-height: 2px !important;
+    max-height: 2px !important;
 
     border: 0 !important;
 
-    border-radius: 10px !important;
-}
-
-
-/*
-  👻 영상 가리개
-
-  영상과 완전히 같은 크기의
-  크림색 레이어를 위에 올린다.
-*/
-
-.youtube-cover {
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 10;
-
-    background: #fffaf7;
-
-    border-radius: 10px;
-
-    pointer-events: none;
+    opacity: 0 !important;
 }
 
 
@@ -228,7 +207,7 @@ body {
 
     gap: 7px;
 
-    margin-top: 7px;
+    margin-top: 4px;
 }
 
 
@@ -423,22 +402,6 @@ body {
     .player {
         padding: 11px;
     }
-
-    .youtube-area {
-        width: 80px;
-        height: 45px;
-    }
-
-    #youtube {
-        width: 80px !important;
-        height: 45px !important;
-
-        min-width: 80px !important;
-        max-width: 80px !important;
-
-        min-height: 45px !important;
-        max-height: 45px !important;
-    }
 }
 </style>
 </head>
@@ -456,13 +419,20 @@ body {
             🎵
         </div>
 
+
         <div class="info">
 
-            <div class="title" id="title">
+            <div
+                class="title"
+                id="title"
+            >
                 오늘의 노래
             </div>
 
-            <div class="artist" id="artist">
+            <div
+                class="artist"
+                id="artist"
+            >
                 YouTube Music
             </div>
 
@@ -481,13 +451,11 @@ body {
     </div>
 
 
-    <!-- 👻 실제 YouTube + 가리개 -->
+    <!-- 👻 보이지 않는 YouTube -->
 
     <div class="youtube-area">
 
         <div id="youtube"></div>
-
-        <div class="youtube-cover"></div>
 
     </div>
 
@@ -534,6 +502,7 @@ body {
             placeholder="YouTube 링크를 붙여넣어 주세요"
         >
 
+
         <button
             class="load-button"
             id="load"
@@ -562,6 +531,8 @@ let player = null;
 let playerReady = false;
 
 let progressTimer = null;
+
+let pendingPlay = false;
 
 
 /* 요소 */
@@ -593,30 +564,46 @@ const loadButton =
 
 
 /* ─────────────────────
-   ⏱ 시간 표시
+   ⏱ 시간
 ───────────────────── */
 
 function formatTime(seconds) {
 
-    seconds = Math.max(
-        0,
-        Math.floor(seconds || 0)
-    );
+    seconds =
+        Math.max(
+            0,
+            Math.floor(
+                seconds || 0
+            )
+        );
+
 
     const minutes =
-        Math.floor(seconds / 60);
+        Math.floor(
+            seconds / 60
+        );
+
 
     const remaining =
-        String(seconds % 60)
-        .padStart(2, '0');
+        String(
+            seconds % 60
+        ).padStart(
+            2,
+            '0'
+        );
 
-    return minutes + ':' + remaining;
+
+    return (
+        minutes +
+        ':' +
+        remaining
+    );
 }
 
 
 
 /* ─────────────────────
-   🔗 YouTube ID 찾기
+   🔗 YouTube ID
 ───────────────────── */
 
 function getVideoId(url) {
@@ -626,6 +613,8 @@ function getVideoId(url) {
         const parsed =
             new URL(url);
 
+
+        /* youtu.be */
 
         if (
             parsed.hostname
@@ -639,21 +628,30 @@ function getVideoId(url) {
         }
 
 
+        /* youtube.com/watch?v= */
+
         const v =
             parsed.searchParams.get('v');
 
         if (v) {
+
             return v;
+
         }
 
+
+        /* shorts / embed */
 
         const match =
             parsed.pathname.match(
                 /\/(?:shorts|embed)\/([^/?]+)/
             );
 
+
         if (match) {
+
             return match[1];
+
         }
 
     }
@@ -661,6 +659,7 @@ function getVideoId(url) {
     catch (error) {
 
     }
+
 
     return null;
 }
@@ -678,20 +677,27 @@ function onYouTubeIframeAPIReady() {
             'youtube',
             {
 
-                width: '80',
+                width: '2',
 
-                height: '45',
+                height: '2',
 
                 videoId: '',
 
 
                 playerVars: {
 
-                    controls: 1,
+                    /*
+                      YouTube 자체 컨트롤은 숨김.
+                      우리 버튼을 사용한다.
+                    */
+
+                    controls: 0,
 
                     rel: 0,
 
-                    playsinline: 1
+                    playsinline: 1,
+
+                    modestbranding: 1
 
                 },
 
@@ -701,7 +707,26 @@ function onYouTubeIframeAPIReady() {
                     onReady:
                         function () {
 
-                            playerReady = true;
+                            playerReady =
+                                true;
+
+
+                            /*
+                              플레이 버튼을
+                              먼저 눌렀다면
+                              준비되는 즉시 재생
+                            */
+
+                            if (
+                                pendingPlay
+                            ) {
+
+                                pendingPlay =
+                                    false;
+
+                                player.playVideo();
+
+                            }
 
                         },
 
@@ -724,7 +749,7 @@ function onYouTubeIframeAPIReady() {
 
 
 /* ─────────────────────
-   🎵 재생 상태
+   🎵 상태
 ───────────────────── */
 
 function handleState(state) {
@@ -734,43 +759,56 @@ function handleState(state) {
         YT.PlayerState.PLAYING
     ) {
 
-        playButton.textContent = 'Ⅱ';
+        playButton.textContent =
+            'Ⅱ';
+
 
         startProgress();
+
 
         updateInfo();
 
     }
+
 
     else if (
         state ===
         YT.PlayerState.PAUSED
     ) {
 
-        playButton.textContent = '▶';
+        playButton.textContent =
+            '▶';
+
 
         updateProgress();
+
 
         stopProgress();
 
     }
+
 
     else if (
         state ===
         YT.PlayerState.ENDED
     ) {
 
-        playButton.textContent = '▶';
+        playButton.textContent =
+            '▶';
+
 
         updateProgress();
+
 
         stopProgress();
 
     }
 
+
     else {
 
-        playButton.textContent = '▶';
+        playButton.textContent =
+            '▶';
 
     }
 
@@ -788,7 +826,9 @@ function updateInfo() {
         !player ||
         !playerReady
     ) {
+
         return;
+
     }
 
 
@@ -799,7 +839,9 @@ function updateInfo() {
 
 
     if (!data) {
+
         return;
+
     }
 
 
@@ -832,7 +874,9 @@ function updateProgress() {
         !player ||
         !playerReady
     ) {
+
         return;
+
     }
 
 
@@ -852,10 +896,13 @@ function updateProgress() {
         formatTime(duration);
 
 
-    if (duration > 0) {
+    if (
+        duration > 0
+    ) {
 
         progress.max =
             duration;
+
 
         progress.value =
             Math.min(
@@ -877,6 +924,7 @@ function startProgress() {
 
     stopProgress();
 
+
     updateProgress();
 
 
@@ -896,13 +944,17 @@ function startProgress() {
 
 function stopProgress() {
 
-    if (progressTimer) {
+    if (
+        progressTimer
+    ) {
 
         clearInterval(
             progressTimer
         );
 
-        progressTimer = null;
+
+        progressTimer =
+            null;
 
     }
 
@@ -911,24 +963,35 @@ function stopProgress() {
 
 
 /* ─────────────────────
-   ▶ 커스텀 재생 버튼
+   ▶ 커스텀 버튼
 ───────────────────── */
 
 playButton.addEventListener(
     'click',
     function () {
 
+        /*
+          YouTube API가 아직 준비되지 않았다면
+          재생 요청을 기억해둔다.
+        */
+
         if (
-            !player ||
             !playerReady
         ) {
+
+            pendingPlay =
+                true;
+
             return;
+
         }
 
 
         const state =
             player.getPlayerState();
 
+
+        /* 현재 재생 중 */
 
         if (
             state ===
@@ -937,13 +1000,16 @@ playButton.addEventListener(
 
             player.pauseVideo();
 
-        }
-
-        else {
-
-            player.playVideo();
+            return;
 
         }
+
+
+        /*
+          첫 재생 / 일시정지 후 재생
+        */
+
+        player.playVideo();
 
     }
 );
@@ -962,12 +1028,16 @@ progress.addEventListener(
             !player ||
             !playerReady
         ) {
+
             return;
+
         }
 
 
         const time =
-            Number(this.value);
+            Number(
+                this.value
+            );
 
 
         player.seekTo(
@@ -977,7 +1047,9 @@ progress.addEventListener(
 
 
         currentElement.textContent =
-            formatTime(time);
+            formatTime(
+                time
+            );
 
     }
 );
@@ -999,6 +1071,8 @@ loadButton.addEventListener(
 
 
 
+/* Enter */
+
 urlInput.addEventListener(
     'keydown',
     function (event) {
@@ -1017,7 +1091,7 @@ urlInput.addEventListener(
 
 
 /* ─────────────────────
-   🎵 영상 로드
+   🎵 영상 불러오기
 ───────────────────── */
 
 function loadVideo() {
@@ -1053,11 +1127,17 @@ function loadVideo() {
     }
 
 
-    player.loadVideoById(id);
+    /*
+      영상은 재생하지 않고
+      플레이어에만 불러온다.
+    */
+
+    player.cueVideoById(id);
 
 
     titleElement.textContent =
         '불러오는 중...';
+
 
     artistElement.textContent =
         'YouTube Music';
@@ -1066,20 +1146,131 @@ function loadVideo() {
     currentElement.textContent =
         '0:00';
 
+
     durationElement.textContent =
         '0:00';
 
 
-    progress.value = 0;
+    progress.value =
+        0;
 
-    progress.max = 0;
+
+    progress.max =
+        0;
+
+
+    /*
+      cue가 준비된 뒤 제목과 길이를
+      가져올 수 있도록 잠시 확인한다.
+    */
+
+    waitForVideoData();
 
 }
 
 
 
 /* ─────────────────────
-   🧹 정리
+   🎵 영상 정보 기다리기
+───────────────────── */
+
+function waitForVideoData() {
+
+    let count = 0;
+
+
+    const timer =
+        setInterval(
+            function () {
+
+                count++;
+
+
+                if (
+                    player &&
+                    playerReady
+                ) {
+
+                    const data =
+                        player.getVideoData();
+
+
+                    const duration =
+                        player.getDuration();
+
+
+                    if (
+                        data &&
+                        data.title
+                    ) {
+
+                        titleElement.textContent =
+                            data.title;
+
+                    }
+
+
+                    if (
+                        data &&
+                        data.author
+                    ) {
+
+                        artistElement.textContent =
+                            data.author;
+
+                    }
+
+
+                    if (
+                        duration > 0
+                    ) {
+
+                        durationElement.textContent =
+                            formatTime(
+                                duration
+                            );
+
+
+                        progress.max =
+                            duration;
+
+
+                        clearInterval(
+                            timer
+                        );
+
+
+                        return;
+
+                    }
+
+                }
+
+
+                /*
+                  너무 오래 기다리지 않는다.
+                */
+
+                if (
+                    count > 40
+                ) {
+
+                    clearInterval(
+                        timer
+                    );
+
+                }
+
+            },
+            250
+        );
+
+}
+
+
+
+/* ─────────────────────
+   🧹 종료
 ───────────────────── */
 
 window.addEventListener(
