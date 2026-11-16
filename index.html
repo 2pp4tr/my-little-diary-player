@@ -7,11 +7,6 @@
 <title>MY LITTLE DIARY MUSIC PLAYER</title>
 
 <style>
-
-/* ═══════════════════════════════════════
-   🎀 기본
-═══════════════════════════════════════ */
-
 * {
     box-sizing: border-box;
 }
@@ -20,41 +15,35 @@ html,
 body {
     margin: 0;
     padding: 0;
-
     width: 100%;
     min-height: 100%;
-
     background: #fffaf7 !important;
 }
 
 body {
-    padding: 14px;
-
+    padding: 12px;
     font-family:
         'Apple SD Gothic Neo',
         'Malgun Gothic',
         sans-serif;
-
     color: #4f6652;
 }
 
 
-/* ═══════════════════════════════════════
-   🎵 메인 플레이어
-═══════════════════════════════════════ */
+/* ─────────────────────
+   🎀 PLAYER
+───────────────────── */
 
 .player {
     width: 100%;
     max-width: 560px;
-
     margin: 0 auto;
 
-    padding: 13px 15px;
+    padding: 14px 15px;
 
     background: #fffaf7;
 
     border: 2px solid #e5f2df;
-
     border-radius: 27px;
 
     box-shadow:
@@ -62,31 +51,28 @@ body {
 }
 
 
-/* ═══════════════════════════════════════
-   🎀 상단
-═══════════════════════════════════════ */
+/* ─────────────────────
+   🎵 TOP
+───────────────────── */
 
 .top {
     display: flex;
-
     align-items: center;
-
     gap: 11px;
 
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 
-/* 음악 아이콘 */
+/* 앨범 아이콘 */
 
 .cover {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
 
-    flex: 0 0 50px;
+    flex: 0 0 48px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
@@ -94,7 +80,7 @@ body {
 
     border-radius: 17px;
 
-    font-size: 22px;
+    font-size: 21px;
 }
 
 
@@ -102,7 +88,6 @@ body {
 
 .info {
     min-width: 0;
-
     flex: 1;
 }
 
@@ -110,13 +95,10 @@ body {
     color: #4f6652;
 
     font-size: 15px;
-
     font-weight: 500;
 
     white-space: nowrap;
-
     overflow: hidden;
-
     text-overflow: ellipsis;
 }
 
@@ -129,9 +111,7 @@ body {
 }
 
 
-/* ═══════════════════════════════════════
-   ▶ 큰 재생 버튼
-═══════════════════════════════════════ */
+/* 재생 버튼 */
 
 .play-button {
     width: 40px;
@@ -140,11 +120,9 @@ body {
     flex: 0 0 40px;
 
     border: 0;
-
     border-radius: 50%;
 
     background: #e5f2df;
-
     color: #4f6652;
 
     font-size: 16px;
@@ -152,7 +130,6 @@ body {
     cursor: pointer;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
@@ -163,7 +140,6 @@ body {
 
 .play-button:hover {
     background: #dcebd6;
-
     transform: scale(1.05);
 }
 
@@ -172,73 +148,73 @@ body {
 }
 
 
-/* ═══════════════════════════════════════
-   🎬 실제 YouTube 플레이어
-═══════════════════════════════════════ */
+/* ─────────────────────
+   🎬 YOUTUBE
+───────────────────── */
+
+/*
+  YouTube 영상은 완전히 숨기면
+  Notion에서 재생이 막힐 수 있음.
+
+  그래서 아주 작은 영역만 유지.
+*/
 
 .youtube-area {
     width: 100%;
-
-    min-height: 96px;
+    height: 48px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
-    padding: 5px;
+    margin-top: 2px;
 
-    background: #e5f2df;
-
-    border-radius: 19px;
+    background: transparent;
 
     overflow: hidden;
 }
 
 
-/*
-   너무 크지 않게 작은 영상으로 표시
-*/
+/* 실제 YouTube iframe */
 
 #youtube {
-    display: block;
+    display: block !important;
 
-    width: 160px !important;
-    height: 90px !important;
+    width: 80px !important;
+    height: 45px !important;
 
-    min-width: 160px !important;
-    max-width: 160px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
 
-    min-height: 90px !important;
-    max-height: 90px !important;
+    min-height: 45px !important;
+    max-height: 45px !important;
 
-    border: 0;
+    border: 0 !important;
 
-    border-radius: 14px;
-
-    background: #e5f2df;
+    border-radius: 10px !important;
 }
 
 
-/* ═══════════════════════════════════════
-   🎧 진행바
-═══════════════════════════════════════ */
+/* ─────────────────────
+   📍 PROGRESS
+───────────────────── */
 
 .progress-area {
     display: flex;
-
     align-items: center;
 
     gap: 7px;
 
-    margin-top: 9px;
+    margin-top: 3px;
 }
 
-.time {
-    width: 30px;
 
-    flex: 0 0 30px;
+/* 시간 */
+
+.time {
+    width: 31px;
+
+    flex: 0 0 31px;
 
     color: #91a292;
 
@@ -254,13 +230,11 @@ body {
     flex: 1;
 
     width: 100%;
-
-    height: 4px;
+    height: 5px;
 
     margin: 0;
 
     appearance: none;
-
     -webkit-appearance: none;
 
     background: #dfe9da;
@@ -276,7 +250,7 @@ body {
 /* Chrome / Safari */
 
 #progress::-webkit-slider-runnable-track {
-    height: 4px;
+    height: 5px;
 
     background: #dfe9da;
 
@@ -285,13 +259,12 @@ body {
 
 #progress::-webkit-slider-thumb {
     appearance: none;
-
     -webkit-appearance: none;
 
     width: 11px;
     height: 11px;
 
-    margin-top: -3.5px;
+    margin-top: -3px;
 
     border: 0;
 
@@ -303,16 +276,40 @@ body {
 }
 
 
-/* ═══════════════════════════════════════
-   🔗 YouTube 링크
-═══════════════════════════════════════ */
+/* Firefox */
+
+#progress::-moz-range-track {
+    height: 5px;
+
+    background: #dfe9da;
+
+    border-radius: 10px;
+}
+
+#progress::-moz-range-thumb {
+    width: 11px;
+    height: 11px;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    background: #91ad91;
+
+    cursor: pointer;
+}
+
+
+/* ─────────────────────
+   🔗 URL
+───────────────────── */
 
 .urlbox {
     display: flex;
 
     gap: 7px;
 
-    margin-top: 10px;
+    margin-top: 9px;
 }
 
 .urlbox input {
@@ -330,7 +327,7 @@ body {
 
     outline: none;
 
-    background: #ffffff;
+    background: #fff;
 
     color: #4f6652;
 
@@ -347,6 +344,8 @@ body {
     border-color: #b8cdb2;
 }
 
+
+/* 불러오기 */
 
 .load-button {
     height: 34px;
@@ -375,9 +374,7 @@ body {
 }
 
 
-/* ═══════════════════════════════════════
-   🌷 안내
-═══════════════════════════════════════ */
+/* 안내문 */
 
 .note {
     margin-top: 7px;
@@ -390,14 +387,14 @@ body {
 }
 
 
-/* ═══════════════════════════════════════
-   📱 작은 화면
-═══════════════════════════════════════ */
+/* ─────────────────────
+   📱 MOBILE
+───────────────────── */
 
 @media (max-width: 450px) {
 
     body {
-        padding: 9px;
+        padding: 8px;
     }
 
     .player {
@@ -405,33 +402,25 @@ body {
     }
 
     #youtube {
-        width: 145px !important;
-        height: 82px !important;
+        width: 80px !important;
+        height: 45px !important;
 
-        min-width: 145px !important;
-        max-width: 145px !important;
+        min-width: 80px !important;
+        max-width: 80px !important;
 
-        min-height: 82px !important;
-        max-height: 82px !important;
+        min-height: 45px !important;
+        max-height: 45px !important;
     }
-
 }
-
 </style>
 </head>
 
 
 <body>
 
-
-<!-- ═══════════════════════════════════════
-     🎀 플레이어
-═══════════════════════════════════════ -->
-
 <div class="player">
 
-
-    <!-- 🎵 상단 -->
+    <!-- 🎵 위쪽 -->
 
     <div class="top">
 
@@ -439,40 +428,32 @@ body {
             🎵
         </div>
 
-
         <div class="info">
 
-            <div
-                class="title"
-                id="title">
+            <div class="title" id="title">
                 오늘의 노래
             </div>
 
-            <div
-                class="artist"
-                id="artist">
+            <div class="artist" id="artist">
                 YouTube Music
             </div>
 
         </div>
 
 
-        <!-- 커스텀 재생 버튼 -->
-
         <button
             class="play-button"
             id="playBtn"
             type="button"
-            aria-label="재생">
+            aria-label="재생"
+        >
             ▶
         </button>
 
     </div>
 
 
-    <!-- ═══════════════════════════════════════
-         🎬 실제 YouTube
-    ═══════════════════════════════════════ -->
+    <!-- 🎬 아주 작은 YouTube -->
 
     <div class="youtube-area">
 
@@ -481,15 +462,14 @@ body {
     </div>
 
 
-    <!-- ═══════════════════════════════════════
-         🎧 진행바
-    ═══════════════════════════════════════ -->
+    <!-- 📍 진행바 -->
 
     <div class="progress-area">
 
         <span
             class="time"
-            id="current">
+            id="current"
+        >
             0:00
         </span>
 
@@ -498,36 +478,37 @@ body {
             id="progress"
             type="range"
             min="0"
-            max="100"
+            max="0"
             value="0"
-            step="0.1">
+            step="0.1"
+        >
 
 
         <span
             class="time"
-            id="duration">
+            id="duration"
+        >
             0:00
         </span>
 
     </div>
 
 
-    <!-- ═══════════════════════════════════════
-         🔗 링크
-    ═══════════════════════════════════════ -->
+    <!-- 🔗 YouTube 링크 -->
 
     <div class="urlbox">
 
         <input
             id="url"
             type="text"
-            placeholder="YouTube 링크를 붙여넣어 주세요">
-
+            placeholder="YouTube 링크를 붙여넣어 주세요"
+        >
 
         <button
             class="load-button"
             id="load"
-            type="button">
+            type="button"
+        >
             불러오기
         </button>
 
@@ -538,20 +519,13 @@ body {
         ♡ YouTube 링크를 불러와 음악을 재생해 주세요 ♡
     </div>
 
-
 </div>
 
-
-<!-- YouTube IFrame API -->
 
 <script src="https://www.youtube.com/iframe_api"></script>
 
 
 <script>
-
-/* ═══════════════════════════════════════
-   🎵 변수
-═══════════════════════════════════════ */
 
 let player = null;
 
@@ -560,9 +534,7 @@ let playerReady = false;
 let progressTimer = null;
 
 
-/* ═══════════════════════════════════════
-   🔎 요소
-═══════════════════════════════════════ */
+/* 요소 */
 
 const titleElement =
     document.getElementById('title');
@@ -589,36 +561,33 @@ const loadButton =
     document.getElementById('load');
 
 
-/* ═══════════════════════════════════════
+
+/* ─────────────────────
    ⏱ 시간 표시
-═══════════════════════════════════════ */
+───────────────────── */
 
 function formatTime(seconds) {
 
-    seconds =
-        Math.max(
-            0,
-            Math.floor(seconds || 0)
-        );
-
+    seconds = Math.max(
+        0,
+        Math.floor(seconds || 0)
+    );
 
     const minutes =
         Math.floor(seconds / 60);
-
 
     const remaining =
         String(seconds % 60)
         .padStart(2, '0');
 
-
     return minutes + ':' + remaining;
-
 }
 
 
-/* ═══════════════════════════════════════
-   🔎 YouTube ID
-═══════════════════════════════════════ */
+
+/* ─────────────────────
+   🔗 YouTube ID 찾기
+───────────────────── */
 
 function getVideoId(url) {
 
@@ -631,9 +600,8 @@ function getVideoId(url) {
         /* youtu.be */
 
         if (
-            parsed.hostname.includes(
-                'youtu.be'
-            )
+            parsed.hostname
+            .includes('youtu.be')
         ) {
 
             return parsed.pathname
@@ -648,47 +616,36 @@ function getVideoId(url) {
         const v =
             parsed.searchParams.get('v');
 
-
         if (v) {
-
             return v;
-
         }
 
 
-        /* youtube.com/shorts/ */
-
-        /* youtube.com/embed/ */
+        /* shorts / embed */
 
         const match =
             parsed.pathname.match(
                 /\/(?:shorts|embed)\/([^/?]+)/
             );
 
-
         if (match) {
-
             return match[1];
-
         }
 
     }
 
     catch (error) {
 
-        return null;
-
     }
 
-
     return null;
-
 }
 
 
-/* ═══════════════════════════════════════
-   🎬 YouTube API
-═══════════════════════════════════════ */
+
+/* ─────────────────────
+   ▶ YouTube API
+───────────────────── */
 
 function onYouTubeIframeAPIReady() {
 
@@ -697,13 +654,20 @@ function onYouTubeIframeAPIReady() {
             'youtube',
             {
 
-                width: '160',
+                width: '80',
 
-                height: '90',
+                height: '45',
 
                 videoId: '',
 
+
                 playerVars: {
+
+                    /*
+                      controls는 켜둠.
+                      실제 YouTube 영상에서
+                      재생이 가능하도록 유지.
+                    */
 
                     controls: 1,
 
@@ -717,35 +681,35 @@ function onYouTubeIframeAPIReady() {
                 events: {
 
                     onReady:
-                    function () {
+                        function () {
 
-                        playerReady = true;
+                            playerReady = true;
 
-                    },
+                        },
 
 
                     onStateChange:
-                    function (event) {
+                        function (event) {
 
-                        updatePlayerState(
-                            event.data
-                        );
+                            handleState(
+                                event.data
+                            );
 
-                    }
+                        }
 
                 }
 
             }
         );
-
 }
 
 
-/* ═══════════════════════════════════════
-   ▶ 재생 상태
-═══════════════════════════════════════ */
 
-function updatePlayerState(state) {
+/* ─────────────────────
+   🎵 재생 상태
+───────────────────── */
+
+function handleState(state) {
 
     if (
         state ===
@@ -760,20 +724,45 @@ function updatePlayerState(state) {
 
     }
 
-    else {
+    else if (
+        state ===
+        YT.PlayerState.PAUSED
+    ) {
 
         playButton.textContent = '▶';
 
+        updateProgress();
+
         stopProgress();
+
+    }
+
+    else if (
+        state ===
+        YT.PlayerState.ENDED
+    ) {
+
+        playButton.textContent = '▶';
+
+        updateProgress();
+
+        stopProgress();
+
+    }
+
+    else {
+
+        playButton.textContent = '▶';
 
     }
 
 }
 
 
-/* ═══════════════════════════════════════
+
+/* ─────────────────────
    🎵 제목 / 채널
-═══════════════════════════════════════ */
+───────────────────── */
 
 function updateInfo() {
 
@@ -781,9 +770,7 @@ function updateInfo() {
         !player ||
         !playerReady
     ) {
-
         return;
-
     }
 
 
@@ -794,9 +781,7 @@ function updateInfo() {
 
 
     if (!data) {
-
         return;
-
     }
 
 
@@ -818,9 +803,10 @@ function updateInfo() {
 }
 
 
-/* ═══════════════════════════════════════
-   📊 진행바 업데이트
-═══════════════════════════════════════ */
+
+/* ─────────────────────
+   📍 진행바 업데이트
+───────────────────── */
 
 function updateProgress() {
 
@@ -828,9 +814,7 @@ function updateProgress() {
         !player ||
         !playerReady
     ) {
-
         return;
-
     }
 
 
@@ -850,22 +834,30 @@ function updateProgress() {
         formatTime(duration);
 
 
+    /*
+      영상 길이를 진행바 최대값으로 설정
+    */
+
     if (duration > 0) {
 
         progress.max =
             duration;
 
         progress.value =
-            current;
+            Math.min(
+                current,
+                duration
+            );
 
     }
 
 }
 
 
-/* ═══════════════════════════════════════
-   ⏱ 진행바 시작
-═══════════════════════════════════════ */
+
+/* ─────────────────────
+   🔄 진행바 반복 업데이트
+───────────────────── */
 
 function startProgress() {
 
@@ -873,18 +865,20 @@ function startProgress() {
 
     updateProgress();
 
+
     progressTimer =
         setInterval(
-            updateProgress,
-            300
+            function () {
+
+                updateProgress();
+
+            },
+            250
         );
 
 }
 
 
-/* ═══════════════════════════════════════
-   ⏸ 진행바 정지
-═══════════════════════════════════════ */
 
 function stopProgress() {
 
@@ -901,9 +895,10 @@ function stopProgress() {
 }
 
 
-/* ═══════════════════════════════════════
+
+/* ─────────────────────
    ▶ 커스텀 재생 버튼
-═══════════════════════════════════════ */
+───────────────────── */
 
 playButton.addEventListener(
     'click',
@@ -913,9 +908,7 @@ playButton.addEventListener(
             !player ||
             !playerReady
         ) {
-
             return;
-
         }
 
 
@@ -942,9 +935,10 @@ playButton.addEventListener(
 );
 
 
-/* ═══════════════════════════════════════
-   🎧 진행바 이동
-═══════════════════════════════════════ */
+
+/* ─────────────────────
+   ⏩ 진행바 이동
+───────────────────── */
 
 progress.addEventListener(
     'input',
@@ -954,84 +948,48 @@ progress.addEventListener(
             !player ||
             !playerReady
         ) {
-
             return;
-
         }
 
 
+        const time =
+            Number(this.value);
+
+
+        /*
+          실제 영상 위치 이동
+        */
+
         player.seekTo(
-            Number(this.value),
+            time,
             true
         );
+
+
+        currentElement.textContent =
+            formatTime(time);
 
     }
 );
 
 
-/* ═══════════════════════════════════════
-   🔗 링크 불러오기
-═══════════════════════════════════════ */
+
+/* ─────────────────────
+   🔗 노래 불러오기
+───────────────────── */
 
 loadButton.addEventListener(
     'click',
     function () {
 
-        const id =
-            getVideoId(
-                urlInput.value.trim()
-            );
-
-
-        if (!id) {
-
-            alert(
-                'YouTube 링크를 확인해 주세요.'
-            );
-
-            return;
-
-        }
-
-
-        if (
-            !player ||
-            !playerReady
-        ) {
-
-            alert(
-                'YouTube 플레이어가 아직 준비되지 않았어요. 잠시 후 다시 눌러주세요.'
-            );
-
-            return;
-
-        }
-
-
-        player.loadVideoById(id);
-
-
-        titleElement.textContent =
-            '불러오는 중...';
-
-        artistElement.textContent =
-            'YouTube Music';
-
-        currentElement.textContent =
-            '0:00';
-
-        durationElement.textContent =
-            '0:00';
-
-        progress.value = 0;
+        loadVideo();
 
     }
 );
 
 
-/* ═══════════════════════════════════════
-   ⌨️ 엔터
-═══════════════════════════════════════ */
+
+/* Enter로 불러오기 */
 
 urlInput.addEventListener(
     'keydown',
@@ -1041,9 +999,92 @@ urlInput.addEventListener(
             event.key === 'Enter'
         ) {
 
-            loadButton.click();
+            loadVideo();
 
         }
+
+    }
+);
+
+
+
+/* ─────────────────────
+   🎵 영상 로드
+───────────────────── */
+
+function loadVideo() {
+
+    const id =
+        getVideoId(
+            urlInput.value.trim()
+        );
+
+
+    if (!id) {
+
+        alert(
+            'YouTube 링크를 확인해 주세요.'
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !player ||
+        !playerReady
+    ) {
+
+        alert(
+            'YouTube 플레이어가 아직 준비되지 않았어요. 잠시 후 다시 눌러주세요.'
+        );
+
+        return;
+
+    }
+
+
+    /*
+      새 영상 로드
+    */
+
+    player.loadVideoById(id);
+
+
+    /* 초기화 */
+
+    titleElement.textContent =
+        '불러오는 중...';
+
+    artistElement.textContent =
+        'YouTube Music';
+
+
+    currentElement.textContent =
+        '0:00';
+
+    durationElement.textContent =
+        '0:00';
+
+
+    progress.value = 0;
+
+    progress.max = 0;
+
+}
+
+
+
+/* ─────────────────────
+   🧹 페이지 종료 시 정리
+───────────────────── */
+
+window.addEventListener(
+    'beforeunload',
+    function () {
+
+        stopProgress();
 
     }
 );
