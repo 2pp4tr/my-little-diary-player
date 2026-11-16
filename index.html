@@ -30,9 +30,9 @@ body {
 }
 
 
-/* ╭─────────────────────╮
+/* ─────────────────────
    🎀 PLAYER
-╰─────────────────────╯ */
+───────────────────── */
 
 .player {
     width: 100%;
@@ -51,9 +51,9 @@ body {
 }
 
 
-/* ╭─────────────────────╮
+/* ─────────────────────
    🎵 TOP
-╰─────────────────────╯ */
+───────────────────── */
 
 .top {
     display: flex;
@@ -148,20 +148,18 @@ body {
 }
 
 
-/* ╭─────────────────────╮
-   👻 YOUTUBE 최소화
-╰─────────────────────╯ */
+/* ─────────────────────
+   👻 YOUTUBE
+───────────────────── */
 
 /*
-  YouTube iframe을 완전히 삭제하거나
-  display:none으로 만들면 재생 API가
-  정상 작동하지 않을 수 있다.
-
-  그래서 2×2px로 유지하고
-  투명하게 만든다.
+  iframe은 실제 재생을 위해 유지한다.
+  화면에서는 2×2px로만 존재한다.
 */
 
 .youtube-area {
+    position: relative;
+
     width: 2px;
     height: 2px;
 
@@ -175,9 +173,6 @@ body {
 
     line-height: 0;
 }
-
-
-/* 실제 YouTube iframe */
 
 #youtube {
     display: block !important;
@@ -197,9 +192,9 @@ body {
 }
 
 
-/* ╭─────────────────────╮
+/* ─────────────────────
    📍 PROGRESS
-╰─────────────────────╯ */
+───────────────────── */
 
 .progress-area {
     display: flex;
@@ -210,12 +205,8 @@ body {
     margin-top: 4px;
 }
 
-
-/* 시간 */
-
 .time {
     width: 31px;
-
     flex: 0 0 31px;
 
     color: #91a292;
@@ -224,9 +215,6 @@ body {
 
     text-align: center;
 }
-
-
-/* 진행바 */
 
 #progress {
     flex: 1;
@@ -247,9 +235,6 @@ body {
 
     cursor: pointer;
 }
-
-
-/* Chrome / Safari */
 
 #progress::-webkit-slider-runnable-track {
     height: 5px;
@@ -277,9 +262,6 @@ body {
     cursor: pointer;
 }
 
-
-/* Firefox */
-
 #progress::-moz-range-track {
     height: 5px;
 
@@ -302,9 +284,9 @@ body {
 }
 
 
-/* ╭─────────────────────╮
+/* ─────────────────────
    🔗 URL
-╰─────────────────────╯ */
+───────────────────── */
 
 .urlbox {
     display: flex;
@@ -346,9 +328,6 @@ body {
     border-color: #b8cdb2;
 }
 
-
-/* 불러오기 */
-
 .load-button {
     height: 34px;
 
@@ -389,9 +368,9 @@ body {
 }
 
 
-/* ╭─────────────────────╮
+/* ─────────────────────
    📱 MOBILE
-╰─────────────────────╯ */
+───────────────────── */
 
 @media (max-width: 450px) {
 
@@ -410,8 +389,6 @@ body {
 <body>
 
 <div class="player">
-
-    <!-- 🎵 위쪽 -->
 
     <div class="top">
 
@@ -451,12 +428,10 @@ body {
     </div>
 
 
-    <!-- 👻 보이지 않는 YouTube -->
+    <!-- 👻 숨겨진 YouTube -->
 
     <div class="youtube-area">
-
         <div id="youtube"></div>
-
     </div>
 
 
@@ -492,7 +467,7 @@ body {
     </div>
 
 
-    <!-- 🔗 YouTube 링크 -->
+    <!-- 🔗 링크 -->
 
     <div class="urlbox">
 
@@ -527,12 +502,18 @@ body {
 <script>
 
 let player = null;
-
 let playerReady = false;
-
 let progressTimer = null;
 
-let pendingPlay = false;
+
+/* 현재 영상 */
+
+let currentVideoId = null;
+
+
+/* 첫 재생 시도 여부 */
+
+let firstPlayAttempt = false;
 
 
 /* 요소 */
@@ -569,35 +550,19 @@ const loadButton =
 
 function formatTime(seconds) {
 
-    seconds =
-        Math.max(
-            0,
-            Math.floor(
-                seconds || 0
-            )
-        );
-
+    seconds = Math.max(
+        0,
+        Math.floor(seconds || 0)
+    );
 
     const minutes =
-        Math.floor(
-            seconds / 60
-        );
-
+        Math.floor(seconds / 60);
 
     const remaining =
-        String(
-            seconds % 60
-        ).padStart(
-            2,
-            '0'
-        );
+        String(seconds % 60)
+        .padStart(2, '0');
 
-
-    return (
-        minutes +
-        ':' +
-        remaining
-    );
+    return minutes + ':' + remaining;
 }
 
 
@@ -614,11 +579,8 @@ function getVideoId(url) {
             new URL(url);
 
 
-        /* youtu.be */
-
         if (
-            parsed.hostname
-                .includes('youtu.be')
+            parsed.hostname.includes('youtu.be')
         ) {
 
             return parsed.pathname
@@ -627,8 +589,6 @@ function getVideoId(url) {
 
         }
 
-
-        /* youtube.com/watch?v= */
 
         const v =
             parsed.searchParams.get('v');
@@ -639,8 +599,6 @@ function getVideoId(url) {
 
         }
 
-
-        /* shorts / embed */
 
         const match =
             parsed.pathname.match(
@@ -686,11 +644,6 @@ function onYouTubeIframeAPIReady() {
 
                 playerVars: {
 
-                    /*
-                      YouTube 자체 컨트롤은 숨김.
-                      우리 버튼을 사용한다.
-                    */
-
                     controls: 0,
 
                     rel: 0,
@@ -707,26 +660,7 @@ function onYouTubeIframeAPIReady() {
                     onReady:
                         function () {
 
-                            playerReady =
-                                true;
-
-
-                            /*
-                              플레이 버튼을
-                              먼저 눌렀다면
-                              준비되는 즉시 재생
-                            */
-
-                            if (
-                                pendingPlay
-                            ) {
-
-                                pendingPlay =
-                                    false;
-
-                                player.playVideo();
-
-                            }
+                            playerReady = true;
 
                         },
 
@@ -759,56 +693,43 @@ function handleState(state) {
         YT.PlayerState.PLAYING
     ) {
 
-        playButton.textContent =
-            'Ⅱ';
-
+        playButton.textContent = 'Ⅱ';
 
         startProgress();
-
 
         updateInfo();
 
     }
-
 
     else if (
         state ===
         YT.PlayerState.PAUSED
     ) {
 
-        playButton.textContent =
-            '▶';
-
+        playButton.textContent = '▶';
 
         updateProgress();
-
 
         stopProgress();
 
     }
-
 
     else if (
         state ===
         YT.PlayerState.ENDED
     ) {
 
-        playButton.textContent =
-            '▶';
-
+        playButton.textContent = '▶';
 
         updateProgress();
-
 
         stopProgress();
 
     }
 
-
     else {
 
-        playButton.textContent =
-            '▶';
+        playButton.textContent = '▶';
 
     }
 
@@ -817,7 +738,7 @@ function handleState(state) {
 
 
 /* ─────────────────────
-   🎵 제목 / 채널
+   🎵 정보
 ───────────────────── */
 
 function updateInfo() {
@@ -896,13 +817,10 @@ function updateProgress() {
         formatTime(duration);
 
 
-    if (
-        duration > 0
-    ) {
+    if (duration > 0) {
 
         progress.max =
             duration;
-
 
         progress.value =
             Math.min(
@@ -917,24 +835,19 @@ function updateProgress() {
 
 
 /* ─────────────────────
-   🔄 진행바 반복
+   🔄 진행바 시작
 ───────────────────── */
 
 function startProgress() {
 
     stopProgress();
 
-
     updateProgress();
 
 
     progressTimer =
         setInterval(
-            function () {
-
-                updateProgress();
-
-            },
+            updateProgress,
             250
         );
 
@@ -944,17 +857,13 @@ function startProgress() {
 
 function stopProgress() {
 
-    if (
-        progressTimer
-    ) {
+    if (progressTimer) {
 
         clearInterval(
             progressTimer
         );
 
-
-        progressTimer =
-            null;
+        progressTimer = null;
 
     }
 
@@ -963,7 +872,90 @@ function stopProgress() {
 
 
 /* ─────────────────────
-   ▶ 커스텀 버튼
+   ▶ 첫 재생
+───────────────────── */
+
+function startPlayback() {
+
+    if (
+        !player ||
+        !playerReady
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+      영상이 아직 로드되지 않았다면
+      아무것도 하지 않는다.
+    */
+
+    if (!currentVideoId) {
+
+        return;
+
+    }
+
+
+    /*
+      첫 번째 커스텀 버튼 클릭.
+
+      먼저 영상이 준비되어 있는지 확인한다.
+    */
+
+    const state =
+        player.getPlayerState();
+
+
+    /*
+      이미 재생 중이면 일시정지.
+    */
+
+    if (
+        state ===
+        YT.PlayerState.PLAYING
+    ) {
+
+        player.pauseVideo();
+
+        return;
+
+    }
+
+
+    /*
+      일시정지 상태라면 이어서 재생.
+    */
+
+    if (
+        state ===
+        YT.PlayerState.PAUSED
+    ) {
+
+        player.playVideo();
+
+        return;
+
+    }
+
+
+    /*
+      아직 재생되지 않은 상태.
+      사용자 클릭 직후 playVideo() 실행.
+    */
+
+    firstPlayAttempt = true;
+
+    player.playVideo();
+
+}
+
+
+
+/* ─────────────────────
+   ▶ 버튼
 ───────────────────── */
 
 playButton.addEventListener(
@@ -971,45 +963,12 @@ playButton.addEventListener(
     function () {
 
         /*
-          YouTube API가 아직 준비되지 않았다면
-          재생 요청을 기억해둔다.
+          이 함수는 반드시
+          실제 사용자 클릭 안에서
+          실행된다.
         */
 
-        if (
-            !playerReady
-        ) {
-
-            pendingPlay =
-                true;
-
-            return;
-
-        }
-
-
-        const state =
-            player.getPlayerState();
-
-
-        /* 현재 재생 중 */
-
-        if (
-            state ===
-            YT.PlayerState.PLAYING
-        ) {
-
-            player.pauseVideo();
-
-            return;
-
-        }
-
-
-        /*
-          첫 재생 / 일시정지 후 재생
-        */
-
-        player.playVideo();
+        startPlayback();
 
     }
 );
@@ -1017,7 +976,7 @@ playButton.addEventListener(
 
 
 /* ─────────────────────
-   ⏩ 진행바 이동
+   ⏩ 진행바
 ───────────────────── */
 
 progress.addEventListener(
@@ -1035,9 +994,7 @@ progress.addEventListener(
 
 
         const time =
-            Number(
-                this.value
-            );
+            Number(this.value);
 
 
         player.seekTo(
@@ -1047,9 +1004,7 @@ progress.addEventListener(
 
 
         currentElement.textContent =
-            formatTime(
-                time
-            );
+            formatTime(time);
 
     }
 );
@@ -1070,8 +1025,6 @@ loadButton.addEventListener(
 );
 
 
-
-/* Enter */
 
 urlInput.addEventListener(
     'keydown',
@@ -1127,9 +1080,12 @@ function loadVideo() {
     }
 
 
+    currentVideoId = id;
+
+
     /*
-      영상은 재생하지 않고
-      플레이어에만 불러온다.
+      cueVideoById를 사용해서
+      링크를 불러올 때 자동재생하지 않는다.
     */
 
     player.cueVideoById(id);
@@ -1158,11 +1114,6 @@ function loadVideo() {
     progress.max =
         0;
 
-
-    /*
-      cue가 준비된 뒤 제목과 길이를
-      가져올 수 있도록 잠시 확인한다.
-    */
 
     waitForVideoData();
 
@@ -1246,10 +1197,6 @@ function waitForVideoData() {
 
                 }
 
-
-                /*
-                  너무 오래 기다리지 않는다.
-                */
 
                 if (
                     count > 40
